@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment</title>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/4290/4290854.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-tr from-indigo-100 via-purple-100 to-pink-100 min-h-screen flex items-center justify-center font-['Roboto']">
+  <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 border border-pink-200">
+    <h2 class="text-3xl font-bold text-center text-indigo-600 mb-6">💳 Payment Details</h2>
+
+    <form method="post" class="space-y-5">
+     {% csrf_token %}
+      <input type="text" name="fullname" placeholder="Full Name on Card" required
+        class="border border-indigo-200 px-4 py-3 w-full rounded-xl text-sm focus:ring-2 focus:ring-pink-300 shadow-sm transition duration-300" />
+
+      <input type="email" name="email" placeholder="Email Address" required
+        class="border border-indigo-200 px-4 py-3 w-full rounded-xl text-sm focus:ring-2 focus:ring-pink-300 shadow-sm transition duration-300" />
+
+      <div class="relative">
+        <input id="cardNumber" type="text" name="cardNumber" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" required
+          class="border border-indigo-200 px-4 py-3 w-full rounded-xl text-sm pr-16 focus:ring-2 focus:ring-pink-300 shadow-sm transition duration-300" />
+        <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center space-x-2 text-xs text-gray-600 font-medium"
+          id="cardBrandBox">
+          <img id="cardBrandLogo" src="" alt="" class="h-5 hidden" />
+          <span id="cardBrandText"></span>
+        </div>
+      </div>
+      <p id="cardError" class="text-red-500 text-xs hidden mt-1">Invalid card number for recognized brand</p>
+
+      <div class="flex gap-4">
+        <input type="text" name="exp" id="exp" placeholder="MM/YY" maxlength="5" required
+          class="border border-indigo-200 px-4 py-3 w-1/2 rounded-xl text-sm focus:ring-2 focus:ring-pink-300 shadow-sm transition duration-300" />
+        <input type="text" name="cvv" id="cvv" placeholder="CVV" maxlength="3" required
+          class="border border-indigo-200 px-4 py-3 w-1/2 rounded-xl text-sm focus:ring-2 focus:ring-pink-300 shadow-sm transition duration-300" />
+      </div>
+
+      <input type="text" name="mob_number" placeholder="Mobile Number" maxlength="10" required
+        class="border border-indigo-200 px-4 py-3 w-full rounded-xl text-sm focus:ring-2 focus:ring-pink-300 shadow-sm transition duration-300" />
+      <input type="text" name="billing" placeholder="Billing Address" required
+        class="border border-indigo-200 px-4 py-3 w-full rounded-xl text-sm focus:ring-2 focus:ring-pink-300 shadow-sm transition duration-300" />
+
+      <button type="submit"
+        class="bg-gradient-to-r from-pink-500 via-red-400 to-yellow-400 hover:from-pink-600 hover:to-yellow-500 text-white w-full py-3 rounded-xl text-lg font-semibold shadow-md transition duration-300">
+        🔐 Pay Securely
+      </button>
+
+      <p class="text-xs text-center text-gray-500 mt-2">100% secure and encrypted transaction</p>
+    </form>
+  </div>
+</body>
+
+<script>
+    const cardNumberInput = document.getElementById("cardNumber");
+    const cardBrandText = document.getElementById("cardBrandText");
+    const cardBrandLogo = document.getElementById("cardBrandLogo");
+    const cardError = document.getElementById("cardError");
+
+    const cardBrandData = [
+      { name: "Visa", regex: /^4/, logo: "https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png" },
+      { name: "MasterCard", regex: /^5[1-5]/, logo: "https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png" },
+      { name: "RuPay", regex: /^6(?:011|52|53|54|55)/, logo: "https://upload.wikimedia.org/wikipedia/commons/2/2a/RuPay.svg" },
+      { name: "American Express", regex: /^3[47]/, logo: "https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg" },
+    ];
+
+    cardNumberInput.addEventListener("input", (e) => {
+      let input = e.target.value.replace(/\D/g, "").slice(0, 16);
+      const formatted = input.match(/.{1,4}/g)?.join(" ") || "";
+      e.target.value = formatted;
+
+      const brand = cardBrandData.find((b) => b.regex.test(input));
+      if (brand) {
+        cardBrandText.textContent = brand.name;
+        cardBrandLogo.src = brand.logo;
+        cardBrandLogo.classList.remove("hidden");
+        cardError.classList.add("hidden");
+      } else if (input.length >= 6) {
+        cardBrandText.textContent = "";
+        cardBrandLogo.classList.add("hidden");
+        cardError.classList.remove("hidden");
+      } else {
+        cardBrandText.textContent = "";
+        cardBrandLogo.classList.add("hidden");
+        cardError.classList.add("hidden");
+      }
+    });
+
+    document.getElementById("cvv").addEventListener("input", (e) => {
+      e.target.value = e.target.value.replace(/\D/g, "").slice(0, 3);
+    });
+
+    const expInput = document.getElementById("exp");
+    expInput.addEventListener("input", (e) => {
+      let val = e.target.value.replace(/\D/g, "").slice(0, 4);
+      if (val.length >= 3) {
+        val = val.slice(0, 2) + "/" + val.slice(2);
+      }
+      e.target.value = val;
+    });
+  </script>
+
+</html>
