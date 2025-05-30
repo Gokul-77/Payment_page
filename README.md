@@ -12,6 +12,12 @@ A secure and responsive payment form built using **Django** and **Tailwind CSS**
 - Stores user input to PostgreSQL via Django models  
 - Admin interface to view submitted payment data  
 
+
+## UI
+
+![Screenshot (102)](https://github.com/user-attachments/assets/f5fd41d5-10ef-40bb-a1b7-9fbe196c1c45)
+
+
 ## 🛠️ Tech Stack
 
 - **Backend:** Django  
