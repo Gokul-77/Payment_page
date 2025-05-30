@@ -1,4 +1,4 @@
-cat <<EOF > README.md
+  README.md
 # 💳 Payment Page
 
 A secure and responsive payment form built using **Django** and **Tailwind CSS**. This project collects and stores payment-related details such as card information, billing address, and user contact info securely in a PostgreSQL database. It includes frontend validation and admin panel access via Django's built-in admin interface.
@@ -67,4 +67,3 @@ python manage.py runserver
 - Responsive error messages and success confirmation  
 - Deploy the project online (e.g., Render, Heroku, Vercel)  
 
-EOF
